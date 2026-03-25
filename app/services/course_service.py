@@ -22,12 +22,19 @@ class CourseService:
             return
         self.courses.remove(course)
 
-
-    def rename(self, id):
-        pass
+    def rename(self, id, name):
+        course = self.find(id)
+        if course is None:
+            print("Такого элемента нет")
+            return
+        course["name"] = name
 
     def change_qty(self, id, qty):
-        pass
+        course = self.find(id)
+        if course is None:
+            print("Такого элемента нет")
+            return
+        course["qty"] = qty
 
 
 course_1 = [
@@ -39,5 +46,7 @@ course_1 = [
 ]
 course_service = CourseService(course_1)
 # print(course_service.find(6))
-course_service.delete(4)
+# course_service.delete(4)
+course_service.rename(5, "joke")
+course_service.change_qty(5, 10)
 print(course_service.get_all())

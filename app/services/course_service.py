@@ -36,8 +36,3 @@ course_1 = [
     {"id": 5, "name": "php", "qty": 50}
 ]
 course_service = CourseService(course_1)
-# print(course_service.find(6))
-# course_service.delete(4)
-course_service.rename(6, "joke")
-# course_service.change_qty(5, 10)
-print(course_service.get_all())

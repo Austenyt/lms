@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from app.services.course_service import course_service
+from app.schemas.course import CourseCreate
 
 courses_router = APIRouter(tags=["courses"])
 
@@ -18,8 +19,8 @@ def find(id: int):
 
 
 @courses_router.post("/courses")
-def create(id: int, name: str, qty: int):
-    course_service.create(id, name, qty)
+def create(payload: CourseCreate):
+    course_service.create(payload.id, payload.name, payload.qty)
     return {"message": "Курс успешно добавлен!"}
 
 

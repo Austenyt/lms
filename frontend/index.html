@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LMS Courses</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div class="hero__eyebrow">LMS • Минимальный интерфейс</div>
+        <h1 class="hero__title">Курсы и программа обучения</h1>
+        <p class="hero__subtitle">
+          Управляйте списком курсов: создавайте, редактируйте количество уроков и быстро
+          проверяйте карточку курса.
+        </p>
+        <div class="hero__actions">
+          <button class="btn btn--primary" id="refreshBtn">Обновить список</button>
+          <button class="btn btn--ghost" id="healthBtn">Проверить API</button>
+        </div>
+        <div class="hero__status" id="status"></div>
+      </header>
+
+      <section class="grid">
+        <article class="card" data-reveal>
+          <h2>Список курсов</h2>
+          <div class="list" id="courseList"></div>
+        </article>
+
+        <article class="card" data-reveal>
+          <h2>Добавить курс</h2>
+          <form id="createForm" class="form">
+            <label>
+              ID
+              <input type="number" name="id" min="1" required />
+            </label>
+            <label>
+              Название
+              <input type="text" name="name" required />
+            </label>
+            <label>
+              Кол-во уроков
+              <input type="number" name="qty" min="0" required />
+            </label>
+            <button class="btn btn--primary" type="submit">Создать</button>
+          </form>
+        </article>
+
+        <article class="card" data-reveal>
+          <h2>Найти курс</h2>
+          <form id="findForm" class="form">
+            <label>
+              ID
+              <input type="number" name="id" min="1" required />
+            </label>
+            <button class="btn btn--ghost" type="submit">Найти</button>
+          </form>
+          <pre class="result" id="findResult">—</pre>
+        </article>
+
+        <article class="card" data-reveal>
+          <h2>Обновить курс</h2>
+          <form id="updateForm" class="form">
+            <label>
+              ID
+              <input type="number" name="id" min="1" required />
+            </label>
+            <label>
+              Новое название
+              <input type="text" name="name" placeholder="Необязательно" />
+            </label>
+            <label>
+              Новое кол-во уроков
+              <input type="number" name="qty" min="0" placeholder="Необязательно" />
+            </label>
+            <button class="btn btn--primary" type="submit">Сохранить</button>
+          </form>
+        </article>
+
+        <article class="card" data-reveal>
+          <h2>Удалить курс</h2>
+          <form id="deleteForm" class="form">
+            <label>
+              ID
+              <input type="number" name="id" min="1" required />
+            </label>
+            <button class="btn btn--danger" type="submit">Удалить</button>
+          </form>
+        </article>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

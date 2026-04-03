@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.services.course_service import course_service
-from app.schemas.course import CourseCreate
+from app.schemas.course import CourseCreate, CoursePatch, CourseFind
 
 courses_router = APIRouter(tags=["courses"])
 
@@ -10,10 +10,10 @@ def courses():
     return course_service.get_all()
 
 
-@courses_router.get("/courses/{course_id}")
-def find(id: int):
+@courses_router.post("/courses/{course_id}")
+def find(payload: CourseFind):
     try:
-        return course_service.find(id)
+        return course_service.find(payload.id)
     except ValueError:
         return {"message": "Курса с таким id не существует"}
 
@@ -25,21 +25,21 @@ def create(payload: CourseCreate):
 
 
 @courses_router.patch("/courses/{course_id}")
-def patch(id: int, name: str = None, qty: int = None):
+def patch(payload: CoursePatch):
     try:
-        if name is not None:
-            course_service.rename(id, name)
-        if qty is not None:
-            course_service.change_qty(id, qty)
-        return course_service.find(id)
+        if payload.name is not None:
+            course_service.rename(payload.id, payload.name)
+        if payload.qty is not None:
+            course_service.change_qty(payload.id, payload.qty)
+        return course_service.find(payload.id)
     except ValueError:
         return {"message": "Курса с таким id не существует"}
 
 
 @courses_router.delete("/courses/{course_id}")
-def delete(id: int):
+def delete(payload: CourseFind):
     try:
-        course_service.delete(id)
+        course_service.delete(payload.id)
         return courses()
     except ValueError:
         return {"message": "Курса с таким id не существует"}

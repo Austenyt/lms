@@ -93,6 +93,9 @@ document.getElementById("findForm").addEventListener("submit", async (event) => 
       method: "POST",
       body: JSON.stringify({ id }),
     });
+    if (result?.message) {
+      throw new Error(result.message);
+    }
     findResultEl.textContent = JSON.stringify(result, null, 2);
     setStatus(`Курс ${id} найден`);
   } catch (error) {
@@ -108,21 +111,23 @@ document.getElementById("updateForm").addEventListener("submit", async (event) =
   const name = form.name.value.trim();
   const qty = form.qty.value;
 
-  const params = new URLSearchParams();
-  if (name) params.set("name", name);
-  if (qty !== "") params.set("qty", qty);
+  const payload = { id };
+  if (name) payload.name = name;
+  if (qty !== "") payload.qty = Number(qty);
 
-  if (!params.toString()) {
+  if (Object.keys(payload).length === 1) {
     setStatus("Укажите новое имя или количество уроков.", true);
     return;
   }
 
-  params.set("id", id);
-
   try {
-    const result = await request(`/courses/${id}?${params.toString()}`, {
+    const result = await request(`/courses/${id}`, {
       method: "PATCH",
+      body: JSON.stringify(payload),
     });
+    if (result?.message) {
+      throw new Error(result.message);
+    }
     setStatus(`Курс ${id} обновлен`);
     findResultEl.textContent = JSON.stringify(result, null, 2);
     loadCourses();
@@ -137,7 +142,13 @@ document.getElementById("deleteForm").addEventListener("submit", async (event) =
   const id = Number(form.id.value);
 
   try {
-    await request(`/courses/${id}?id=${id}`, { method: "DELETE" });
+    const result = await request(`/courses/${id}`, {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+    });
+    if (result?.message) {
+      throw new Error(result.message);
+    }
     setStatus(`Курс ${id} удален`);
     form.reset();
     loadCourses();

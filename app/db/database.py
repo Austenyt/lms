@@ -16,3 +16,24 @@ engine = create_engine(DATABASE_URL, connect_args={'check_same_thread': False})
 Передаем параметры отключение автоматического сохранения сессии, отключение автоматического сброса, привязывание сессии к движку.
 """
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def hello():
+    yield 'Hello'
+    print('123')
+    yield 'World'
+    yield 'Bro'
+
+
+g = hello()
+print(type(g))
+for i in g:
+    print(i)

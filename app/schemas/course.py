@@ -6,7 +6,6 @@ class CourseFind(BaseModel):
 
 
 class CourseCreate(BaseModel):
-    id: int
     name: str
     qty: int
 

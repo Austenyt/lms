@@ -18,22 +18,21 @@ engine = create_engine(DATABASE_URL, connect_args={'check_same_thread': False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_db():
-    db = SessionLocal()
+def get_session():
+    session = SessionLocal()
     try:
-        yield db
+        yield session
     finally:
-        db.close()
+        session.close()
 
 
-def hello():
-    yield 'Hello'
-    print('123')
-    yield 'World'
-    yield 'Bro'
-
-
-g = hello()
-print(type(g))
-for i in g:
-    print(i)
+# def hello():
+#     yield 'Hello'
+#     yield 'World'
+#     yield 'Bro'
+#
+#
+# g = hello()
+# # print(next(g))
+# for elem in g:
+#     print(elem)

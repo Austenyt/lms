@@ -7,3 +7,8 @@ class Config(BaseSettings):
 
 
 config = Config()
+
+"""
+Адрес для подключения к БД:
+"""
+DATABASE_URL = 'sqlite:///./lms.db'

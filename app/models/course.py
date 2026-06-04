@@ -1,3 +1,5 @@
+from tkinter import Text
+
 from app.db.base import Base
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -21,3 +23,11 @@ class Course(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(150))
     qty: Mapped[int] = mapped_column(Integer)
+
+
+class Lesson(Base):
+    __tablename__ = 'lesson'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(100))
+    content: Mapped[str]

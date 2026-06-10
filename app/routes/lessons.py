@@ -5,9 +5,11 @@ from app.services.lesson_service import lesson_service
 
 lessons_router = APIRouter(tags=['lessons'])
 
+
 @lessons_router.get('/lessons')
 def lessons(session=Depends(get_session)):
     return lesson_service.get_all(session)
+
 
 @lessons_router.post('/lessons/{id}')
 def find(payload: LessonFind, session=Depends(get_session)):
@@ -28,3 +30,11 @@ def patch(payload: LessonPatch, session=Depends(get_session)):
     lesson_service.patch(payload, session)
     return {'message': 'ok'}
 
+
+@lessons_router.delete('/books/{id}')
+def delete(payload: LessonFind, session=Depends(get_session)):
+    try:
+        lesson_service.delete(payload.id, session)
+        return {"message": "Урок удален успешно"}
+    except ValueError:
+        return {"message": "Урока с таким id не существует"}

@@ -8,6 +8,7 @@ class LessonFind(BaseModel):
 class LessonCreate(BaseModel):
     name: str
     content: str
+    course_id: int
 
 
 class LessonPatch(BaseModel):

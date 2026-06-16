@@ -1,9 +1,9 @@
 from tkinter import Text
 
 from app.db.base import Base
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
-from sqlalchemy import String
+from sqlalchemy import String, ForeignKey
 from sqlalchemy import Integer
 
 """
@@ -12,17 +12,14 @@ from sqlalchemy import Integer
 
 
 class Course(Base):
-    """
-    Создание таблицы в БД
-    """
+
     __tablename__ = "course"
-    """
-    Задание полей таблицы с описанием типов и атрибутов
-    """
+
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(150))
-    qty: Mapped[int] = mapped_column(Integer)
+
+    lessons: Mapped[list["Course"]] = relationship(back_populates="courses")
 
 
 class Lesson(Base):
@@ -31,3 +28,6 @@ class Lesson(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100))
     content: Mapped[str]
+    course_id: Mapped[int] = mapped_column(ForeignKey("course.id"))
+
+    course: Mapped["Course"] = relationship(back_populates="lessons")

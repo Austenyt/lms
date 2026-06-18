@@ -1,5 +1,3 @@
-from tkinter import Text
-
 from app.db.base import Base
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column

@@ -7,10 +7,11 @@ class LessonService:
     def get_all(self, session):
         return session.scalars(select(Lesson)).all()
 
-    def create(self, name, content, session):
+    def create(self, name, content, course_id, session):
         lesson = Lesson(
             name=name,
             content=content,
+            course_id=course_id,
         )
         session.add(lesson)
         session.commit()

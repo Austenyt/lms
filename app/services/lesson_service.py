@@ -7,12 +7,8 @@ class LessonService:
     def get_all(self, session):
         return session.scalars(select(Lesson)).all()
 
-    def create(self, name, content, course_id, session):
-        lesson = Lesson(
-            name=name,
-            content=content,
-            course_id=course_id,
-        )
+    def create(self, payload, session):
+        lesson = Lesson(**payload.model_dump())
         session.add(lesson)
         session.commit()
         session.refresh(lesson)

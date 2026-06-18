@@ -1,92 +1,678 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LMS Courses</title>
-    <link rel="stylesheet" href="/static/styles.css" />
-  </head>
-  <body>
-    <main class="page">
-      <header class="hero">
-        <div class="hero__eyebrow">LMS • Минимальный интерфейс</div>
-        <h1 class="hero__title">Курсы и программа обучения</h1>
-        <p class="hero__subtitle">
-          Управляйте списком курсов: создавайте, редактируйте количество уроков и быстро
-          проверяйте карточку курса.
-        </p>
-        <div class="hero__actions">
-          <button class="btn btn--primary" id="refreshBtn">Обновить список</button>
-          <button class="btn btn--ghost" id="healthBtn">Проверить API</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Онлайн-школа — управление</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fb;
+      color: #1e293b;
+      padding: 2rem;
+    }
+    #app {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: #0f172a;
+      border-bottom: 3px solid #3b82f6;
+      padding-bottom: 0.5rem;
+      display: inline-block;
+    }
+    .flex-row {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .section {
+      background: #ffffff;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      flex: 1 1 45%;
+      min-width: 300px;
+    }
+    .section h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .section h2 span {
+      font-weight: 300;
+      font-size: 1rem;
+      color: #64748b;
+    }
+    .btn {
+      background: #eef2f6;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      color: #1e293b;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .btn:hover {
+      background: #d1d9e6;
+    }
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    .btn-success {
+      background: #22c55e;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #16a34a;
+    }
+    .btn-sm {
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .list {
+      list-style: none;
+      margin-top: 0.5rem;
+    }
+    .list li {
+      background: #f8fafc;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid #3b82f6;
+      transition: background 0.1s;
+    }
+    .list li:hover {
+      background: #f1f5f9;
+    }
+    .list li .actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .list li .course-name {
+      cursor: pointer;
+      font-weight: 500;
+      flex: 1;
+    }
+    .list li .course-name:hover {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+    .list li .badge {
+      background: #dbeafe;
+      color: #1e40af;
+      border-radius: 1rem;
+      padding: 0.1rem 0.6rem;
+      font-size: 0.7rem;
+      margin-right: 0.8rem;
+    }
+    .list li .lesson-content {
+      font-size: 0.85rem;
+      color: #475569;
+      margin-top: 0.2rem;
+    }
+    .form-container {
+      background: #f8fafc;
+      padding: 1rem;
+      border-radius: 0.8rem;
+      margin: 0.8rem 0 1rem 0;
+      border: 1px solid #e2e8f0;
+      display: none;
+    }
+    .form-container.visible {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 0.6rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+      color: #334155;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      background: white;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+    }
+    .empty-message {
+      color: #94a3b8;
+      font-style: italic;
+      padding: 0.5rem 0;
+    }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #0f172a;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 0.8rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast.error {
+      background: #b91c1c;
+    }
+    @media (max-width: 700px) {
+      .flex-row {
+        flex-direction: column;
+      }
+      .section {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <h1>📚 Онлайн-школа</h1>
+  <div class="flex-row">
+    <!-- Секция курсов -->
+    <div class="section" id="courses-section">
+      <h2>
+        Курсы
+        <button class="btn btn-primary" id="show-add-course-btn">+ Добавить</button>
+      </h2>
+      <div id="course-form-container" class="form-container">
+        <h3 id="course-form-title">Добавить курс</h3>
+        <div class="form-group">
+          <label for="course-name-input">Название</label>
+          <input type="text" id="course-name-input" placeholder="Введите название курса" />
         </div>
-        <div class="hero__status" id="status"></div>
-      </header>
+        <div class="form-actions">
+          <button class="btn btn-success" id="save-course-btn">Сохранить</button>
+          <button class="btn" id="cancel-course-btn">Отмена</button>
+        </div>
+      </div>
+      <ul class="list" id="courses-list">
+        <li class="empty-message">Загрузка...</li>
+      </ul>
+    </div>
 
-      <section class="grid">
-        <article class="card" data-reveal>
-          <h2>Список курсов</h2>
-          <div class="list" id="courseList"></div>
-        </article>
+    <!-- Секция уроков -->
+    <div class="section" id="lessons-section">
+      <h2>
+        <span>Уроки курса <span id="current-course-name-display">—</span></span>
+        <button class="btn btn-primary" id="show-add-lesson-btn" disabled>+ Добавить урок</button>
+      </h2>
+      <div id="lesson-form-container" class="form-container">
+        <h3 id="lesson-form-title">Добавить урок</h3>
+        <div class="form-group">
+          <label for="lesson-name-input">Название</label>
+          <input type="text" id="lesson-name-input" placeholder="Название урока" />
+        </div>
+        <div class="form-group">
+          <label for="lesson-content-input">Содержание</label>
+          <textarea id="lesson-content-input" placeholder="Содержание урока"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-success" id="save-lesson-btn">Сохранить</button>
+          <button class="btn" id="cancel-lesson-btn">Отмена</button>
+        </div>
+      </div>
+      <ul class="list" id="lessons-list">
+        <li class="empty-message">Выберите курс, чтобы увидеть уроки</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-        <article class="card" data-reveal>
-          <h2>Добавить курс</h2>
-          <form id="createForm" class="form">
-            <label>
-              Название
-              <input type="text" name="name" required />
-            </label>
-            <label>
-              Кол-во уроков
-              <input type="number" name="qty" min="0" required />
-            </label>
-            <button class="btn btn--primary" type="submit">Создать</button>
-          </form>
-        </article>
+<!-- Toast-уведомления -->
+<div id="toast" class="toast"></div>
 
-        <article class="card" data-reveal>
-          <h2>Найти курс</h2>
-          <form id="findForm" class="form">
-            <label>
-              ID
-              <input type="number" name="id" min="1" required />
-            </label>
-            <button class="btn btn--ghost" type="submit">Найти</button>
-          </form>
-          <pre class="result" id="findResult">—</pre>
-        </article>
+<script>
+  (function() {
+    // ===== Состояние =====
+    let courses = [];              // все курсы (без вложенных уроков)
+    let currentCourseId = null;    // выбранный курс
+    let editingCourseId = null;    // ID редактируемого курса (null = создание)
+    let editingLessonId = null;    // ID редактируемого урока (null = создание)
 
-        <article class="card" data-reveal>
-          <h2>Обновить курс</h2>
-          <form id="updateForm" class="form">
-            <label>
-              ID
-              <input type="number" name="id" min="1" required />
-            </label>
-            <label>
-              Новое название
-              <input type="text" name="name" placeholder="Необязательно" />
-            </label>
-            <label>
-              Новое кол-во уроков
-              <input type="number" name="qty" min="0" placeholder="Необязательно" />
-            </label>
-            <button class="btn btn--primary" type="submit">Сохранить</button>
-          </form>
-        </article>
+    // ===== DOM-ссылки =====
+    const coursesListEl = document.getElementById('courses-list');
+    const lessonsListEl = document.getElementById('lessons-list');
+    const currentCourseNameDisplay = document.getElementById('current-course-name-display');
 
-        <article class="card" data-reveal>
-          <h2>Удалить курс</h2>
-          <form id="deleteForm" class="form">
-            <label>
-              ID
-              <input type="number" name="id" min="1" required />
-            </label>
-            <button class="btn btn--danger" type="submit">Удалить</button>
-          </form>
-        </article>
-      </section>
-    </main>
+    const courseFormContainer = document.getElementById('course-form-container');
+    const courseFormTitle = document.getElementById('course-form-title');
+    const courseNameInput = document.getElementById('course-name-input');
+    const saveCourseBtn = document.getElementById('save-course-btn');
+    const cancelCourseBtn = document.getElementById('cancel-course-btn');
+    const showAddCourseBtn = document.getElementById('show-add-course-btn');
 
-    <script src="/static/app.js"></script>
-  </body>
+    const lessonFormContainer = document.getElementById('lesson-form-container');
+    const lessonFormTitle = document.getElementById('lesson-form-title');
+    const lessonNameInput = document.getElementById('lesson-name-input');
+    const lessonContentInput = document.getElementById('lesson-content-input');
+    const saveLessonBtn = document.getElementById('save-lesson-btn');
+    const cancelLessonBtn = document.getElementById('cancel-lesson-btn');
+    const showAddLessonBtn = document.getElementById('show-add-lesson-btn');
+
+    const toastEl = document.getElementById('toast');
+    let toastTimer = null;
+
+    // ===== Вспомогательные функции =====
+    function showToast(message, isError = false) {
+      toastEl.textContent = message;
+      toastEl.className = 'toast' + (isError ? ' error' : '');
+      if (toastTimer) clearTimeout(toastTimer);
+      requestAnimationFrame(() => toastEl.classList.add('show'));
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ===== API-запросы =====
+    async function apiRequest(url, method, body = null) {
+      const options = {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+      };
+      if (body) options.body = JSON.stringify(body);
+      const response = await fetch(url, options);
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || `Ошибка ${response.status}`);
+      }
+      return data;
+    }
+
+    // ----- Курсы -----
+    async function fetchCourses() {
+      return await apiRequest('/courses', 'GET');
+    }
+    async function createCourse(name) {
+      // qty=0 – ваша схема CourseCreate требует это поле
+      return await apiRequest('/courses', 'POST', { name, qty: 0 });
+    }
+    async function updateCourse(id, name) {
+      return await apiRequest(`/courses/${id}`, 'PATCH', { id, name });
+    }
+    async function deleteCourse(id) {
+      return await apiRequest(`/courses/${id}`, 'DELETE', { id });
+    }
+
+    // ----- Уроки -----
+    async function fetchLessons() {
+      return await apiRequest('/lessons', 'GET');
+    }
+    async function createLesson(name, content, courseId) {
+      return await apiRequest('/lessons', 'POST', { name, content, course_id: courseId });
+    }
+    async function updateLesson(id, name, content, courseId) {
+      return await apiRequest(`/lessons/${id}`, 'POST', { id, name, content, course_id: courseId });
+    }
+    async function deleteLesson(id) {
+      // Ваш роутер: DELETE /books/{id}
+      return await apiRequest(`/books/${id}`, 'DELETE', { id });
+    }
+
+    // ===== Загрузка уроков для выбранного курса =====
+    async function loadLessonsForCourse(courseId) {
+      try {
+        const allLessons = await fetchLessons();
+        const course = courses.find(c => c.id === courseId);
+        if (course) {
+          course.lessons = allLessons.filter(l => l.course_id === courseId);
+        }
+        renderLessons();
+      } catch (err) {
+        const course = courses.find(c => c.id === courseId);
+        if (course) course.lessons = [];
+        renderLessons();
+        showToast('Не удалось загрузить уроки', true);
+      }
+    }
+
+    // ===== Рендеринг =====
+    function renderCourses() {
+      if (!courses.length) {
+        coursesListEl.innerHTML = '<li class="empty-message">Курсов пока нет</li>';
+        return;
+      }
+      let html = '';
+      for (const course of courses) {
+        const lessonCount = (course.lessons && course.lessons.length) || 0;
+        const isActive = course.id === currentCourseId;
+        html += `
+          <li style="${isActive ? 'border-left-color: #22c55e; background: #f0fdf4;' : ''}">
+            <span class="course-name" data-id="${course.id}">${escapeHtml(course.name)}</span>
+            <span class="badge">${lessonCount} уроков</span>
+            <div class="actions">
+              <button class="btn btn-sm btn-primary edit-course-btn" data-id="${course.id}">✎</button>
+              <button class="btn btn-sm btn-danger delete-course-btn" data-id="${course.id}">✕</button>
+            </div>
+          </li>
+        `;
+      }
+      coursesListEl.innerHTML = html;
+
+      // Клик по названию = выбор курса
+      document.querySelectorAll('.course-name').forEach(el => {
+        el.addEventListener('click', () => {
+          const id = Number(el.dataset.id);
+          selectCourse(id);
+        });
+      });
+      // Кнопки редактирования/удаления курса
+      document.querySelectorAll('.edit-course-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = Number(btn.dataset.id);
+          startEditCourse(id);
+        });
+      });
+      document.querySelectorAll('.delete-course-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = Number(btn.dataset.id);
+          confirmDeleteCourse(id);
+        });
+      });
+    }
+
+    function renderLessons() {
+      if (!currentCourseId) {
+        lessonsListEl.innerHTML = '<li class="empty-message">Выберите курс, чтобы увидеть уроки</li>';
+        currentCourseNameDisplay.textContent = '—';
+        showAddLessonBtn.disabled = true;
+        return;
+      }
+      const course = courses.find(c => c.id === currentCourseId);
+      if (!course) {
+        lessonsListEl.innerHTML = '<li class="empty-message">Курс не найден</li>';
+        currentCourseNameDisplay.textContent = '?';
+        showAddLessonBtn.disabled = true;
+        return;
+      }
+      currentCourseNameDisplay.textContent = course.name;
+      showAddLessonBtn.disabled = false;
+
+      const lessons = course.lessons || [];
+      if (!lessons.length) {
+        lessonsListEl.innerHTML = '<li class="empty-message">В этом курсе пока нет уроков</li>';
+        return;
+      }
+      let html = '';
+      for (const lesson of lessons) {
+        html += `
+          <li>
+            <div style="flex:1;">
+              <strong>${escapeHtml(lesson.name)}</strong>
+              <div class="lesson-content">${escapeHtml(lesson.content || '')}</div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-sm btn-primary edit-lesson-btn" data-id="${lesson.id}">✎</button>
+              <button class="btn btn-sm btn-danger delete-lesson-btn" data-id="${lesson.id}">✕</button>
+            </div>
+          </li>
+        `;
+      }
+      lessonsListEl.innerHTML = html;
+
+      document.querySelectorAll('.edit-lesson-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = Number(btn.dataset.id);
+          startEditLesson(id);
+        });
+      });
+      document.querySelectorAll('.delete-lesson-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = Number(btn.dataset.id);
+          confirmDeleteLesson(id);
+        });
+      });
+    }
+
+    // ===== Выбор курса =====
+    async function selectCourse(id) {
+      if (currentCourseId === id && courses.find(c => c.id === id)?.lessons) {
+        // уже загружены, можно просто перерисовать
+        renderCourses();
+        renderLessons();
+        return;
+      }
+      currentCourseId = id;
+      renderCourses(); // подсветка
+      await loadLessonsForCourse(id);
+    }
+
+    // ===== Форма курса =====
+    function openCourseForm(title, name = '', courseId = null) {
+      courseFormTitle.textContent = title;
+      courseNameInput.value = name;
+      editingCourseId = courseId;
+      courseFormContainer.classList.add('visible');
+      courseNameInput.focus();
+    }
+    function closeCourseForm() {
+      courseFormContainer.classList.remove('visible');
+      editingCourseId = null;
+      courseNameInput.value = '';
+    }
+    function startEditCourse(id) {
+      const course = courses.find(c => c.id === id);
+      if (!course) return;
+      openCourseForm('Редактировать курс', course.name, id);
+    }
+    async function saveCourse() {
+      const name = courseNameInput.value.trim();
+      if (!name) {
+        showToast('Введите название курса', true);
+        return;
+      }
+      try {
+        if (editingCourseId !== null) {
+          await updateCourse(editingCourseId, name);
+          showToast('Курс обновлён');
+        } else {
+          await createCourse(name);
+          showToast('Курс добавлен');
+        }
+        closeCourseForm();
+        await loadData();
+        // Если был выбран курс – восстанавливаем выбор
+        if (currentCourseId) {
+          const exists = courses.some(c => c.id === currentCourseId);
+          if (exists) await loadLessonsForCourse(currentCourseId);
+          else {
+            currentCourseId = null;
+            renderLessons();
+          }
+        }
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+    async function confirmDeleteCourse(id) {
+      if (!confirm('Удалить курс и все его уроки?')) return;
+      try {
+        await deleteCourse(id);
+        showToast('Курс удалён');
+        if (currentCourseId === id) currentCourseId = null;
+        await loadData();
+        renderLessons();
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // ===== Форма урока =====
+    function openLessonForm(title, name = '', content = '', lessonId = null) {
+      lessonFormTitle.textContent = title;
+      lessonNameInput.value = name;
+      lessonContentInput.value = content;
+      editingLessonId = lessonId;
+      lessonFormContainer.classList.add('visible');
+      lessonNameInput.focus();
+    }
+    function closeLessonForm() {
+      lessonFormContainer.classList.remove('visible');
+      editingLessonId = null;
+      lessonNameInput.value = '';
+      lessonContentInput.value = '';
+    }
+    function startEditLesson(id) {
+      const course = courses.find(c => c.id === currentCourseId);
+      if (!course) return;
+      const lesson = (course.lessons || []).find(l => l.id === id);
+      if (!lesson) return;
+      openLessonForm('Редактировать урок', lesson.name, lesson.content, id);
+    }
+    async function saveLesson() {
+      const name = lessonNameInput.value.trim();
+      const content = lessonContentInput.value.trim();
+      if (!name) {
+        showToast('Введите название урока', true);
+        return;
+      }
+      if (!currentCourseId) {
+        showToast('Сначала выберите курс', true);
+        return;
+      }
+      try {
+        if (editingLessonId !== null) {
+          await updateLesson(editingLessonId, name, content, currentCourseId);
+          showToast('Урок обновлён');
+        } else {
+          await createLesson(name, content, currentCourseId);
+          showToast('Урок добавлен');
+        }
+        closeLessonForm();
+        await loadLessonsForCourse(currentCourseId);
+        renderCourses(); // обновим счётчик уроков
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+    async function confirmDeleteLesson(id) {
+      if (!confirm('Удалить урок?')) return;
+      try {
+        await deleteLesson(id);
+        showToast('Урок удалён');
+        await loadLessonsForCourse(currentCourseId);
+        renderCourses();
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // ===== Загрузка всех данных =====
+    async function loadData() {
+      try {
+        const data = await fetchCourses();
+        // Убедимся, что у каждого курса есть поле lessons (для хранения)
+        courses = data.map(c => ({ ...c, lessons: [] }));
+        renderCourses();
+        // Если был выбран курс – подгружаем его уроки
+        if (currentCourseId) {
+          const exists = courses.some(c => c.id === currentCourseId);
+          if (exists) await loadLessonsForCourse(currentCourseId);
+          else {
+            currentCourseId = null;
+            renderLessons();
+          }
+        } else {
+          renderLessons();
+        }
+      } catch (err) {
+        showToast('Ошибка загрузки курсов', true);
+        courses = [];
+        renderCourses();
+        renderLessons();
+      }
+    }
+
+    // ===== Инициализация событий =====
+    function init() {
+      // Курсы
+      showAddCourseBtn.addEventListener('click', () => openCourseForm('Добавить курс'));
+      cancelCourseBtn.addEventListener('click', closeCourseForm);
+      saveCourseBtn.addEventListener('click', saveCourse);
+
+      // Уроки
+      showAddLessonBtn.addEventListener('click', () => {
+        if (!currentCourseId) {
+          showToast('Сначала выберите курс', true);
+          return;
+        }
+        openLessonForm('Добавить урок');
+      });
+      cancelLessonBtn.addEventListener('click', closeLessonForm);
+      saveLessonBtn.addEventListener('click', saveLesson);
+
+      // Старт
+      loadData();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+</body>
 </html>

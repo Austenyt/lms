@@ -1,24 +1,25 @@
-from sqlalchemy import select
+from sqlalchemy import select, update
+from sqlalchemy.orm import selectinload
+
 from app.models.course import Course
 
 
 class CourseService:
 
     def get_all(self, session):
-        return session.scalars(select(Course)).all()
+        return session.scalars(select(Course).options(selectinload(Course.lessons))).all()
 
-    def create(self, name, qty, session):
+    def create(self, name, session):
         course = Course(
             name=name,
-            qty=qty
         )
         session.add(course)
         session.commit()
         session.refresh(course)
         return course
 
-    def find(self, id, session):
-        course = session.get(Course, id)
+    def find(self, course_id, session):
+        course = session.scalars(select(Course).where(Course.id == course_id).options(selectinload(Course.lessons)))
         if course is None:
             raise ValueError("id не найден")
         return course
@@ -28,14 +29,10 @@ class CourseService:
         session.delete(course)
         session.commit()
 
-    def rename(self, id, name, session):
-        course = self.find(id, session)
-        course.name = name
-        session.commit()
-
-    def change_qty(self, id, qty, session):
-        course = self.find(id, session)
-        course.qty = qty
+    def patch(self, payload, session):
+        session.execute(
+            update(Course).where(Course.id == payload.id).values(**payload.model_dump(exclude={'id'}, exclude_unset=True))
+        )
         session.commit()
 
 

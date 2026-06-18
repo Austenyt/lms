@@ -7,7 +7,6 @@ class CourseFind(BaseModel):
 
 class CourseCreate(BaseModel):
     name: str
-    qty: int
 
 
 class CoursePatch(BaseModel):

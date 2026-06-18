@@ -17,7 +17,7 @@ class Course(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(150))
 
-    lessons: Mapped[list["Course"]] = relationship(back_populates="courses")
+    lessons: Mapped[list["Lesson"]] = relationship(back_populates="course")
 
 
 class Lesson(Base):

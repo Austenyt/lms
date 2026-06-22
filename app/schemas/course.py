@@ -12,4 +12,3 @@ class CourseCreate(BaseModel):
 class CoursePatch(BaseModel):
     id: int
     name: str = None
-    qty: int = None

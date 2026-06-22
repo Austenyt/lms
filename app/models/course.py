@@ -10,9 +10,7 @@ from sqlalchemy import Integer
 
 
 class Course(Base):
-
     __tablename__ = "course"
-
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(150))

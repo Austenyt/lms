@@ -22,8 +22,7 @@ class LessonService:
 
     def patch(self, payload, session):
         session.execute(
-            update(Lesson).where(Lesson.id == payload.id).values(
-                **payload.model_dump(exclude={'id'}, exclude_unset=True))
+            update(Lesson).where(Lesson.id == payload.id).values(**payload.model_dump(exclude={'id'}, exclude_unset=True))
         )
         session.commit()
 

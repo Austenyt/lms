@@ -25,7 +25,7 @@ def create(payload: LessonCreate, session=Depends(get_session)):
     return {'message': f'Урок {lesson.id} добавлен'}
 
 
-@lessons_router.post('/lessons/{id}')
+@lessons_router.patch('/lessons/{id}')
 def patch(payload: LessonPatch, session=Depends(get_session)):
     lesson_service.patch(payload, session)
     return {'message': 'ok'}

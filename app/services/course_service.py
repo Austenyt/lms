@@ -9,10 +9,8 @@ class CourseService:
     def get_all(self, session):
         return session.scalars(select(Course).options(selectinload(Course.lessons))).all()
 
-    def create(self, name, session):
-        course = Course(
-            name=name,
-        )
+    def create(self, payload, session):
+        course = Course(**payload.model_dump())
         session.add(course)
         session.commit()
         session.refresh(course)
@@ -24,15 +22,16 @@ class CourseService:
             raise ValueError("id не найден")
         return course
 
+    def patch(self, payload, session):
+        session.execute(
+            update(Course).where(Course.id == payload.id).values(
+                **payload.model_dump(exclude={'id'}, exclude_unset=True))
+        )
+        session.commit()
+
     def delete(self, id, session):
         course = self.find(id, session)
         session.delete(course)
-        session.commit()
-
-    def patch(self, payload, session):
-        session.execute(
-            update(Course).where(Course.id == payload.id).values(**payload.model_dump(exclude={'id'}, exclude_unset=True))
-        )
         session.commit()
 
 

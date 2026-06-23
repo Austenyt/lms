@@ -27,3 +27,11 @@ class Lesson(Base):
     course_id: Mapped[int] = mapped_column(ForeignKey("course.id"))
 
     course: Mapped["Course"] = relationship(back_populates="lessons")
+
+
+class Student(Base):
+    __tablename__ = 'student'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    first_name: Mapped[str] = mapped_column(String(50))
+    last_name: Mapped[str] = mapped_column(String(50))

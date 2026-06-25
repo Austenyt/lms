@@ -1,4 +1,6 @@
 from sqlalchemy import select, update
+from sqlalchemy.orm import selectinload
+
 from app.models.course import Student
 
 
@@ -15,7 +17,7 @@ class StudentsService:
         return student
 
     def find(self, id, session):
-        student = session.get(Student, id)
+        student = session.scalar(select(Student).where(Student.id == id).options(selectinload(Student.courses)))
         if student is None:
             raise ValueError("Студент не найден")
         return student

@@ -37,4 +37,4 @@ def delete(payload: StudentFind, session=Depends(get_session)):
         student_service.find(payload.id, session)
         return {'message': "Удаление успешно"}
     except ValueError:
-        return {'message': 'ok'}
+        return {'message': 'Ошибка'}

@@ -1,8 +1,10 @@
 from app.db.base import Base
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, Session
 from sqlalchemy.orm import mapped_column
 from sqlalchemy import String, ForeignKey, Table, Column
 from sqlalchemy import Integer
+
+from app.db.database import engine
 
 """
 Создание класса для создания таблицы
@@ -14,6 +16,7 @@ enrollment = Table(
     Column("student_id", Integer, ForeignKey("student.id"), primary_key=True),
     Column("course_id", Integer, ForeignKey("course.id"), primary_key=True),
 )
+
 
 class Course(Base):
     __tablename__ = "course"
@@ -48,3 +51,25 @@ class Student(Base):
     courses: Mapped[list["Course"]] = relationship(
         secondary=enrollment, back_populates="students"
     )
+
+
+with Session(autoflush=False, bind=engine) as db:
+    beadweaving = Course(name="Beadweaving")
+    macrame = Course(name="Macrame")
+
+    pupa = Student(name="Pupa")
+    lupa = Student(name="Lupa")
+
+    lesson_1 = Lesson(name="Beadweaving for noobs")
+    lesson_2 = Lesson(name="Beadweaving advanced")
+    lesson_3 = Lesson(name="Macrame Basics")
+    lesson_4 = Lesson(name="Macrameniacs")
+
+    beadweaving.lessons = [lesson_1, lesson_2]
+    macrame.lessons = [lesson_3, lesson_4]
+
+    beadweaving.students = [pupa]
+    macrame.students = [lupa]
+
+    db.add_all([beadweaving, macrame])
+    db.commit()

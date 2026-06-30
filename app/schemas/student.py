@@ -19,3 +19,7 @@ class StudentResponse(BaseModel):
     first_name: str
     last_name: str
     courses: list
+
+class Enroll(BaseModel):
+    course_id: int
+    student_id: int

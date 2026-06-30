@@ -17,7 +17,7 @@ class CourseService:
         return course
 
     def find(self, course_id, session):
-        course = session.scalars(select(Course).where(Course.id == course_id).options(selectinload(Course.lessons)))
+        course = session.scalar(select(Course).where(Course.id == course_id).options(selectinload(Course.lessons)))
         if course is None:
             raise ValueError("id не найден")
         return course

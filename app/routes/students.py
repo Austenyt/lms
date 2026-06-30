@@ -38,3 +38,21 @@ def delete(payload: StudentFind, session=Depends(get_session)):
         return {'message': "Удаление успешно"}
     except ValueError:
         return {'message': 'Ошибка'}
+
+
+@students_router.post('/students/{student_id}/{course_id}')
+def enroll(course_id, student_id, session=Depends(get_session)):
+    try:
+        student_service.enroll(course_id, student_id, session)
+        return {'message': 'Студент добавлен'}
+    except ValueError:
+        return {'message': 'Ошибка добавления'}
+
+
+@students_router.delete('/students/{student_id}/{course_id}')
+def dismiss(course_id, student_id, session=Depends(get_session)):
+    try:
+        student_service.dismiss(course_id, student_id, session)
+        return {'message': 'Студент удален'}
+    except ValueError:
+        return {'message': 'Ошибка удаления'}

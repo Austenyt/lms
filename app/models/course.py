@@ -51,25 +51,3 @@ class Student(Base):
     courses: Mapped[list["Course"]] = relationship(
         secondary=enrollment, back_populates="students"
     )
-
-
-with Session(autoflush=False, bind=engine) as db:
-    beadweaving = Course(name="Beadweaving")
-    macrame = Course(name="Macrame")
-
-    pupa = Student(name="Pupa")
-    lupa = Student(name="Lupa")
-
-    lesson_1 = Lesson(name="Beadweaving for noobs")
-    lesson_2 = Lesson(name="Beadweaving advanced")
-    lesson_3 = Lesson(name="Macrame Basics")
-    lesson_4 = Lesson(name="Macrameniacs")
-
-    beadweaving.lessons = [lesson_1, lesson_2]
-    macrame.lessons = [lesson_3, lesson_4]
-
-    beadweaving.students = [pupa]
-    macrame.students = [lupa]
-
-    db.add_all([beadweaving, macrame])
-    db.commit()

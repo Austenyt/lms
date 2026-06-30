@@ -1,5 +1,6 @@
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
+from app.services.course_service import course_service
 
 from app.models.course import Student
 
@@ -31,5 +32,20 @@ class StudentsService:
         session.delete(student)
         session.commit()
 
+    def enroll(self, course_id, student_id, session):
+        course = course_service.find(course_id, session)
+        student = self.find(student_id, session)
+
+        student.courses.append(course)
+        session.commit()
+        return student
+
+    def dismiss(self, course_id, student_id, session):
+        course = course_service.find(course_id, session)
+        student = self.find(student_id, session)
+
+        student.courses.remove(course)
+        session.commit()
+        return student
 
 student_service = StudentsService()

@@ -2,28 +2,32 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from app.services.course_service import course_service
 
-from app.models.course import Student
+from app.models.models import Student
 
 
 class StudentsService:
 
-    def get_all(self, session):
+    @staticmethod
+    def get_all(session):
         return session.scalars(select(Student)).all()
 
-    def create(self, payload, session):
+    @staticmethod
+    def create(payload, session):
         student = Student(**payload.model_dump())
         session.add(student)
         session.commit()
         session.refresh(student)
         return student
 
-    def find(self, id, session):
+    @staticmethod
+    def find(id, session):
         student = session.scalar(select(Student).where(Student.id == id).options(selectinload(Student.courses)))
         if student is None:
             raise ValueError("Студент не найден")
         return student
 
-    def patch(self, payload, session):
+    @staticmethod
+    def patch(payload, session):
         session.execute(update(Student).where(Student.id == payload.id).values(**payload.model_dump(exclude={'id'}, exclude_unset=True)))
         session.commit()
 

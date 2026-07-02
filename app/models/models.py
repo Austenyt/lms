@@ -1,14 +1,9 @@
 from app.db.base import Base
-from sqlalchemy.orm import Mapped, relationship, Session
+from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 from sqlalchemy import String, ForeignKey, Table, Column
 from sqlalchemy import Integer
 
-from app.db.database import engine
-
-"""
-Создание класса для создания таблицы
-"""
 
 enrollment = Table(
     "enrollment",

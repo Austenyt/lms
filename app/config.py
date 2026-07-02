@@ -5,10 +5,6 @@ from pathlib import Path
 class Config(BaseSettings):
     frontend_dir: Path = Path(__file__).resolve().parents[1] / "frontend"
 
-
 config = Config()
 
-"""
-Адрес для подключения к БД:
-"""
 DATABASE_URL = 'sqlite:///./lms.db'

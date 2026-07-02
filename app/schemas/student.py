@@ -11,8 +11,8 @@ class StudentCreate(BaseModel):
 
 class StudentPatch(BaseModel):
     id: int
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+    first_name: str | None = None
+    last_name: str | None = None
 
 class StudentResponse(BaseModel):
     id: int

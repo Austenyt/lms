@@ -25,6 +25,8 @@ class LessonService:
 
     @staticmethod
     def patch(payload, session):
+        if payload.name and payload.content is None:
+            raise ValueError("Пустой запрос")
         session.execute(
             update(Lesson).where(Lesson.id == payload.id).values(**payload.model_dump(exclude={'id'}, exclude_unset=True))
         )

@@ -11,4 +11,4 @@ class CourseCreate(BaseModel):
 
 class CoursePatch(BaseModel):
     id: int
-    name: str = None
+    name: str

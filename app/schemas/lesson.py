@@ -14,5 +14,5 @@ class LessonCreate(BaseModel):
 
 class LessonPatch(BaseModel):
     id: int
-    name: Optional[str]
-    content: Optional[str]
+    name: str | None = None
+    content: str | None = None

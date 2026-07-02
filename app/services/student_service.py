@@ -28,6 +28,8 @@ class StudentsService:
 
     @staticmethod
     def patch(payload, session):
+        if payload.first_name and payload.last_name is None:
+            raise ValueError("Пустой запрос")
         session.execute(update(Student).where(Student.id == payload.id).values(**payload.model_dump(exclude={'id'}, exclude_unset=True)))
         session.commit()
 

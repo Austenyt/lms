@@ -31,7 +31,7 @@ def patch(payload: LessonPatch, session=Depends(get_session)):
     return {'message': 'ok'}
 
 
-@lessons_router.delete('/books/{id}')
+@lessons_router.delete('/lessons/{id}')
 def delete(payload: LessonFind, session=Depends(get_session)):
     try:
         lesson_service.delete(payload.id, session)

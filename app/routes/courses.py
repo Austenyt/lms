@@ -21,7 +21,7 @@ def find(payload: CourseFind, session=Depends(get_session)):
 
 @courses_router.post("/courses")
 def create(payload: CourseCreate, session=Depends(get_session)):
-    course_service.create(payload.name, session)
+    course_service.create(payload, session)
     return {"message": "Курс успешно добавлен!"}
 
 

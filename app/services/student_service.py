@@ -9,7 +9,7 @@ class StudentsService:
 
     @staticmethod
     def get_all(session):
-        return session.scalars(select(Student)).all()
+        return session.scalars(select(Student).options(selectinload(Student.courses))).all()
 
     @staticmethod
     def create(payload, session):

@@ -42,6 +42,8 @@ class Student(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     first_name: Mapped[str] = mapped_column(String(50))
     last_name: Mapped[str] = mapped_column(String(50))
+    username: Mapped[str] = mapped_column(String(50))
+    hashed_password: Mapped[str]
 
     courses: Mapped[list["Course"]] = relationship(
         secondary=enrollment, back_populates="students"

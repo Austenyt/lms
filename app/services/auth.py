@@ -1,6 +1,9 @@
+from datetime import datetime, timedelta
+
 from passlib.context import CryptContext
 
 from app.models.models import Student
+from jose import jwt, JWTError
 
 
 class AuthService:
@@ -20,3 +23,31 @@ class AuthService:
         session.commit()
         session.refresh(student)
         return student
+
+    def login(self, username, password, session):
+        student = session.scalar(Student).where(Student.username == username)
+        if not student:
+            raise ValueError("Пользователь не зарегистрирован")
+
+        if not self.pwd_context.verify(password, student.hashed_password):
+            raise ValueError("Введенный пароль неверен")
+
+        token = self._create_token(student.id)
+        return token
+
+    def _create_token(self, student_id):
+        expire = datetime.utcnow() + timedelta(minutes=self.token_expire_session)
+        payload = {
+            'expire': expire,
+            'sub': student_id,
+        }
+        return jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
+
+    def _get_current_student(self, token):
+        try:
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            return payload['sub']
+        except JWTError:
+            raise ValueError("Невалидный токен")
+
+auth_service = AuthService()

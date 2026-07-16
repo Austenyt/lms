@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from sqlalchemy import select
 
 from passlib.context import CryptContext
 
@@ -14,7 +15,7 @@ class AuthService:
         self.pwd_context = CryptContext(schemes=["bcrypt"])
 
     def register(self, username, password, session):
-        existing = session.query(Student).where(Student.username == username)
+        existing = session.scalar(select(Student).where(Student.username == username))
         if existing:
             raise ValueError("Уже существует")
         hashed_password = self.pwd_context.hash(password)

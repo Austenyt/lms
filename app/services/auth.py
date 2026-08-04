@@ -12,7 +12,7 @@ class AuthService:
         self.secret_key = "secret"
         self.algorithm = "HS256"
         self.token_expire_session = 60
-        self.pwd_context = CryptContext(schemes=["bcrypt"])
+        self.pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated=["bcrypt"])
 
     def register(self, first_name, last_name, username, password, session):
         existing = session.scalar(select(Student).where(Student.username == username))
@@ -31,7 +31,7 @@ class AuthService:
         return student
 
     def login(self, username, password, session):
-        student = session.scalar(Student).where(Student.username == username)
+        student = session.scalar(select(Student).where(Student.username == username))
         if not student:
             raise ValueError("Пользователь не зарегистрирован")
 
@@ -44,12 +44,12 @@ class AuthService:
     def _create_token(self, student_id):
         expire = datetime.utcnow() + timedelta(minutes=self.token_expire_session)
         payload = {
-            'expire': expire,
-            'sub': student_id,
+            'exp': expire,
+            'sub': str(student_id),
         }
         return jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
 
-    def _get_current_student(self, token):
+    def get_current_student(self, token):
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
             return payload['sub']

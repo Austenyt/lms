@@ -14,12 +14,17 @@ class AuthService:
         self.token_expire_session = 60
         self.pwd_context = CryptContext(schemes=["bcrypt"])
 
-    def register(self, username, password, session):
+    def register(self, first_name, last_name, username, password, session):
         existing = session.scalar(select(Student).where(Student.username == username))
         if existing:
             raise ValueError("Уже существует")
         hashed_password = self.pwd_context.hash(password)
-        student = Student(username=username, hashed_password=hashed_password)
+        student = Student(
+            first_name=first_name,
+            last_name=last_name,
+            username=username,
+            hashed_password=hashed_password
+        )
         session.add(student)
         session.commit()
         session.refresh(student)
@@ -50,5 +55,6 @@ class AuthService:
             return payload['sub']
         except JWTError:
             raise ValueError("Невалидный токен")
+
 
 auth_service = AuthService()

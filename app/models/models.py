@@ -12,16 +12,26 @@ enrollment = Table(
     Column("course_id", Integer, ForeignKey("course.id"), primary_key=True),
 )
 
+ownership = Table(
+    "ownership",
+    Base.metadata,
+    Column("student_id", Integer, ForeignKey("student.id"), primary_key=True),
+    Column("course_id", Integer, ForeignKey("course.id"), primary_key=True),
+)
 
 class Course(Base):
     __tablename__ = "course"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(150))
+    owner_id: Mapped[int] = mapped_column(ForeignKey('student.id'))
 
     lessons: Mapped[list["Lesson"]] = relationship(back_populates="course")
     students: Mapped[list["Student"]] = relationship(
         secondary=enrollment, back_populates="courses"
+    )
+    owner: Mapped["Student"] = relationship(
+        secondary=ownership, back_populates='courses'
     )
 
 
@@ -48,3 +58,7 @@ class Student(Base):
     courses: Mapped[list["Course"]] = relationship(
         secondary=enrollment, back_populates="students"
     )
+    courses_ownership: Mapped[list["Course"]] = relationship(
+        secondary=ownership, back_populates="students"
+    )
+

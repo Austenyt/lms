@@ -11,8 +11,8 @@ class CourseService:
         return session.scalars(select(Course).options(selectinload(Course.lessons))).all()
 
     @staticmethod
-    def create(payload, session):
-        course = Course(**payload.model_dump())
+    def create(payload, session, student_id):
+        course = Course(**payload.model_dump(), owner_id=student_id)
         session.add(course)
         session.commit()
         session.refresh(course)

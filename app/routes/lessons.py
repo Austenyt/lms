@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.db.database import get_session
+from app.dependencies import get_current_student_id
 from app.schemas.lesson import LessonFind, LessonCreate, LessonPatch
 from app.services.lesson_service import lesson_service
 
@@ -20,8 +21,8 @@ def find(payload: LessonFind, session=Depends(get_session)):
 
 
 @lessons_router.post('/lessons')
-def create(payload: LessonCreate, session=Depends(get_session)):
-    lesson = lesson_service.create(payload, session)
+def create(payload: LessonCreate, session=Depends(get_session), student_id=Depends(get_current_student_id)):
+    lesson = lesson_service.create(payload, session, student_id)
     return {'message': f'Урок {lesson.id} добавлен'}
 
 

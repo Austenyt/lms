@@ -22,21 +22,20 @@ def find(payload: CourseFind, session=Depends(get_session)):
 
 @courses_router.post("/courses")
 def create(payload: CourseCreate, session=Depends(get_session), student_id=Depends(get_current_student_id)):
-    print(student_id)
     course_service.create(payload, session, student_id)
     return {"message": "Курс успешно добавлен!"}
 
 
 @courses_router.patch("/courses/{course_id}")
-def patch(payload: CoursePatch, session=Depends(get_session)):
-    course_service.patch(payload, session)
+def patch(payload: CoursePatch, session=Depends(get_session), student_id=Depends(get_current_student_id)):
+    course_service.patch(payload, session, student_id)
     return {'message': 'ok'}
 
 
 @courses_router.delete("/courses/{course_id}")
-def delete(payload: CourseFind, session=Depends(get_session)):
+def delete(payload: CourseFind, session=Depends(get_session), student_id=Depends(get_current_student_id)):
     try:
-        course_service.delete(payload.id, session)
+        course_service.delete(payload.id, session, student_id)
         return {"message": "OK"}
     except ValueError:
         return {"message": "Курса с таким id не существует"}

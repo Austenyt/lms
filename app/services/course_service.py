@@ -26,15 +26,21 @@ class CourseService:
         return course
 
     @staticmethod
-    def patch(payload, session):
+    def patch(payload, session, student_id):
+        course = session.scalar(select(Course).where(Course.id == payload.id))
+        if int(student_id) != course.owner_id:
+            raise ValueError("Пользователь не является владельцем курса")
         session.execute(
             update(Course).where(Course.id == payload.id).values(
                 **payload.model_dump(exclude={'id'}, exclude_unset=True))
         )
         session.commit()
 
-    def delete(self, id, session):
-        course = self.find(id, session)
+    @staticmethod
+    def delete(id, session, student_id):
+        course = session.scalar(select(Course).where(Course.id == id))
+        if int(student_id) != course.owner_id:
+            raise ValueError("Пользователь не является владельцем курса")
         session.delete(course)
         session.commit()
 

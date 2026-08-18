@@ -11,7 +11,7 @@ class LessonService:
     @staticmethod
     def create(payload, session, student_id):
         course = session.scalar(select(Course).where(Course.id == payload.course_id))
-        if student_id != course.owner_id:
+        if int(student_id) != course.owner_id:
             raise ValueError("Пользователь не является владельцем курса")
         lesson = Lesson(**payload.model_dump())
         session.add(lesson)

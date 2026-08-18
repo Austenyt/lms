@@ -18,6 +18,8 @@ class AuthService:
         existing = session.scalar(select(Student).where(Student.username == username))
         if existing:
             raise ValueError("Уже существует")
+        if len(password) < 8 or len(password) > 12:
+            raise ValueError("Пароль не соответствует требованиям")
         hashed_password = self.pwd_context.hash(password)
         student = Student(
             first_name=first_name,

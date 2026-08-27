@@ -4,12 +4,13 @@ from sqlalchemy import select
 from passlib.context import CryptContext
 
 from app.models.models import Student
+from
 from jose import jwt, JWTError
 
 
 class AuthService:
     def __init__(self):
-        self.secret_key = "secret"
+        self.secret_key = config
         self.algorithm = "HS256"
         self.token_expire_session = 60
         self.pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated=["bcrypt"])

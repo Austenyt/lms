@@ -26,7 +26,7 @@ class Course(Base):
     name: Mapped[str] = mapped_column(String(150))
     owner_id: Mapped[int] = mapped_column(ForeignKey('student.id'))
 
-    lessons: Mapped[list["Lesson"]] = relationship(back_populates="course", cascade="all, delete-orphan", passive_deletes=True)
+    lessons: Mapped[list["Lesson"]] = relationship(back_populates="course", cascade="all, delete-orphan")
     students: Mapped[list["Student"]] = relationship(
         secondary=enrollment, back_populates="courses"
     )

@@ -38,6 +38,9 @@ class CourseService:
 
     @staticmethod
     def delete(id, session, student_id):
+        print(id)
+        print(session)
+        print(student_id)
         course = session.scalar(select(Course).where(Course.id == id))
         if int(student_id) != course.owner_id:
             raise ValueError("Пользователь не является владельцем курса")

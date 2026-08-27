@@ -35,6 +35,7 @@ class LessonService:
         )
         session.commit()
 
+    @staticmethod
     def delete(self, id, session):
         lesson = self.find(id, session)
         session.delete(lesson)

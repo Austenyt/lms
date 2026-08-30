@@ -1,13 +1,14 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
+from passlib.context import CryptContext
 
 
 class Config(BaseSettings):
     frontend_dir: Path = Path(__file__).resolve().parents[1] / "frontend"
-    secret_key: String = String("secret")
-    algorithm = "HS256"
-    token_expire_session = 60
-    pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated=["bcrypt"])
+    secret_key: str = "secret"
+    algorithm: str = "HS256"
+    token_expire_session: int = 60
+    pwd_context: CryptContext = CryptContext(schemes=["argon2", "bcrypt"], deprecated=["bcrypt"])
 
 
 config = Config()

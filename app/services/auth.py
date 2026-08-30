@@ -1,19 +1,17 @@
 from datetime import datetime, timedelta
 from sqlalchemy import select
 
-from passlib.context import CryptContext
-
 from app.models.models import Student
-from
+from app.config import config
 from jose import jwt, JWTError
 
 
 class AuthService:
     def __init__(self):
-        self.secret_key = config
-        self.algorithm = "HS256"
-        self.token_expire_session = 60
-        self.pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated=["bcrypt"])
+        self.secret_key = config.secret_key
+        self.algorithm = config.algorithm
+        self.token_expire_session = config.token_expire_session
+        self.pwd_context = config.pwd_context
 
     def register(self, first_name, last_name, username, password, session):
         existing = session.scalar(select(Student).where(Student.username == username))

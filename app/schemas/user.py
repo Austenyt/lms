@@ -1,22 +1,22 @@
 from pydantic import BaseModel
 
 
-class StudentFind(BaseModel):
+class UserFind(BaseModel):
     id: int
 
 
-class StudentCreate(BaseModel):
+class UserCreate(BaseModel):
     first_name: str
     last_name: str
 
 
-class StudentPatch(BaseModel):
+class UserPatch(BaseModel):
     id: int
     first_name: str | None = None
     last_name: str | None = None
 
 
-class StudentResponse(BaseModel):
+class UserResponse(BaseModel):
     id: int
     first_name: str
     last_name: str

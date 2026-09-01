@@ -4,9 +4,8 @@ from app.services.auth import auth_service
 
 bearer = HTTPBearer()
 
-def get_current_student_id(credentials: HTTPAuthorizationCredentials=Depends(bearer)):
+def get_current_user_id(credentials: HTTPAuthorizationCredentials=Depends(bearer)):
     try:
-        a = auth_service.get_current_student(credentials.credentials)
-        return a
+        return auth_service.get_current_user(credentials.credentials)
     except ValueError:
         return {'message': 'Пользователь не авторизован'}

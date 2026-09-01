@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from app.schemas.student import StudentFind, StudentCreate, StudentPatch
-from app.services.student_service import student_service
+from app.schemas.user import StudentFind, StudentCreate, StudentPatch
+from app.services.user_service import student_service
 from app.db.database import get_session
 
 students_router = APIRouter(tags=['students'])

@@ -1,14 +1,14 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.routes.auth import auth_router
-from app.routes.health import health_router
 from app.routes.courses import courses_router
 from app.routes.frontend import frontend_router
-from fastapi.staticfiles import StaticFiles
-from app.config import config
+from app.routes.health import health_router
 from app.routes.lessons import lessons_router
 from app.routes.students import students_router
-from app.routes.auth import auth_router
+from app.config import config
+
 
 app = FastAPI()
 app.include_router(health_router)

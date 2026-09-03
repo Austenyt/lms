@@ -18,19 +18,6 @@ def find(payload: UserFind, session=Depends(get_session)):
     except ValueError:
         return {'message': "Такого студента нет"}
 
-
-@users_router.post('/users')
-def create(payload: UserCreate, session=Depends(get_session)):
-    user = user_service.create(payload, session)
-    return {'message': f"Студент {user.last_name} добавлен"}
-
-
-@users_router.patch('/users/{id}')
-def patch(payload: UserPatch, session=Depends(get_session)):
-    user_service.patch(payload, session)
-    return {'message': 'ok'}
-
-
 @users_router.delete('/users/{id}')
 def delete(payload: UserFind, session=Depends(get_session)):
     try:

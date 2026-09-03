@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 
@@ -27,6 +28,8 @@ class CourseService:
 
     @staticmethod
     def patch(payload, session, user_id):
+        if payload.id != Course.id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Курс с таким id не найден')
         course = session.scalar(select(Course).where(Course.id == payload.id))
         if int(user_id) != course.owner_id:
             raise ValueError("Пользователь не является владельцем курса")

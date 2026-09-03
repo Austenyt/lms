@@ -12,27 +12,11 @@ class UserService:
         return session.scalars(select(User).options(selectinload(User.courses))).all()
 
     @staticmethod
-    def create(payload, session):
-        user = User(**payload.model_dump())
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-        return user
-
-    @staticmethod
     def find(id, session):
         user = session.scalar(select(User).where(User.id == id).options(selectinload(User.courses)))
         if user is None:
             raise ValueError("Студент не найден")
         return user
-
-    @staticmethod
-    def patch(payload, session):
-        if payload.first_name and payload.last_name is None:
-            raise ValueError("Пустой запрос")
-        session.execute(update(User).where(User.id == payload.id).values(
-            **payload.model_dump(exclude={'id'}, exclude_unset=True)))
-        session.commit()
 
     def delete(self, id, session):
         user = self.find(id, session)

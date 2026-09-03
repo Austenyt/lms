@@ -36,8 +36,8 @@ class LessonService:
         session.commit()
 
     @staticmethod
-    def delete(self, id, session):
-        lesson = self.find(id, session)
+    def delete(id, session):
+        lesson = session.scalar(select(Lesson).where(Lesson.id == id))
         session.delete(lesson)
         session.commit()
 

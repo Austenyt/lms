@@ -11,8 +11,8 @@ class CourseService:
         return session.scalars(select(Course).options(selectinload(Course.lessons))).all()
 
     @staticmethod
-    def create(payload, session, student_id):
-        course = Course(**payload.model_dump(), owner_id=student_id)
+    def create(payload, session, user_id):
+        course = Course(**payload.model_dump(), owner_id=user_id)
         session.add(course)
         session.commit()
         session.refresh(course)
@@ -26,9 +26,9 @@ class CourseService:
         return course
 
     @staticmethod
-    def patch(payload, session, student_id):
+    def patch(payload, session, user_id):
         course = session.scalar(select(Course).where(Course.id == payload.id))
-        if int(student_id) != course.owner_id:
+        if int(user_id) != course.owner_id:
             raise ValueError("Пользователь не является владельцем курса")
         session.execute(
             update(Course).where(Course.id == payload.id).values(
@@ -37,9 +37,9 @@ class CourseService:
         session.commit()
 
     @staticmethod
-    def delete(id, session, student_id):
+    def delete(id, session, user_id):
         course = session.scalar(select(Course).where(Course.id == id))
-        if int(student_id) != course.owner_id:
+        if int(user_id) != course.owner_id:
             raise ValueError("Пользователь не является владельцем курса")
         session.delete(course)
         session.commit()

@@ -1,58 +1,58 @@
 from fastapi import APIRouter, Depends
-from app.schemas.user import StudentFind, StudentCreate, StudentPatch
-from app.services.user_service import student_service
+from app.schemas.user import UserFind, UserCreate, UserPatch
+from app.services.user_service import user_service
 from app.db.database import get_session
 
-students_router = APIRouter(tags=['students'])
+users_router = APIRouter(tags=['users'])
 
 
-@students_router.get('/students')
-def students(session=Depends(get_session)):
-    return student_service.get_all(session)
+@users_router.get('/users')
+def users(session=Depends(get_session)):
+    return user_service.get_all(session)
 
 
-@students_router.post('/students/{id}')
-def find(payload: StudentFind, session=Depends(get_session)):
+@users_router.post('/users/{id}')
+def find(payload: UserFind, session=Depends(get_session)):
     try:
-        return student_service.find(payload.id, session)
+        return user_service.find(payload.id, session)
     except ValueError:
         return {'message': "Такого студента нет"}
 
 
-@students_router.post('/students')
-def create(payload: StudentCreate, session=Depends(get_session)):
-    student = student_service.create(payload, session)
-    return {'message': f"Студент {student.last_name} добавлен"}
+@users_router.post('/users')
+def create(payload: UserCreate, session=Depends(get_session)):
+    user = user_service.create(payload, session)
+    return {'message': f"Студент {user.last_name} добавлен"}
 
 
-@students_router.patch('/students/{id}')
-def patch(payload: StudentPatch, session=Depends(get_session)):
-    student_service.patch(payload, session)
+@users_router.patch('/users/{id}')
+def patch(payload: UserPatch, session=Depends(get_session)):
+    user_service.patch(payload, session)
     return {'message': 'ok'}
 
 
-@students_router.delete('/students/{id}')
-def delete(payload: StudentFind, session=Depends(get_session)):
+@users_router.delete('/users/{id}')
+def delete(payload: UserFind, session=Depends(get_session)):
     try:
-        student_service.find(payload.id, session)
+        user_service.find(payload.id, session)
         return {'message': "Удаление успешно"}
     except ValueError:
         return {'message': 'Ошибка'}
 
 
-@students_router.post('/students/{student_id}/{course_id}')
-def enroll(course_id, student_id, session=Depends(get_session)):
+@users_router.post('/users/{user_id}/{course_id}')
+def enroll(course_id, user_id, session=Depends(get_session)):
     try:
-        student_service.enroll(course_id, student_id, session)
-        return {'message': 'Студент добавлен'}
+        user_service.enroll(course_id, user_id, session)
+        return {'message': 'Пользователь добавлен'}
     except ValueError:
         return {'message': 'Ошибка добавления'}
 
 
-@students_router.delete('/students/{student_id}/{course_id}')
-def dismiss(course_id, student_id, session=Depends(get_session)):
+@users_router.delete('/users/{user_id}/{course_id}')
+def dismiss(course_id, user_id, session=Depends(get_session)):
     try:
-        student_service.dismiss(course_id, student_id, session)
-        return {'message': 'Студент удален'}
+        user_service.dismiss(course_id, user_id, session)
+        return {'message': 'Пользователь удален'}
     except ValueError:
         return {'message': 'Ошибка удаления'}

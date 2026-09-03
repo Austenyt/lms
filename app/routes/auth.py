@@ -12,7 +12,7 @@ def registration(payload: UserRegister, session=Depends(get_session)):
     return {'message': 'Регистрация успешна'}
 
 @auth_router.post('/login')
-def login(payload: StudentLogin, session=Depends(get_session)):
+def login(payload: UserLogin, session=Depends(get_session)):
     try:
         return auth_service.login(payload.username, payload.password, session)
     except ValueError:

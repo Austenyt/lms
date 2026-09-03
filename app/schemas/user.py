@@ -25,4 +25,4 @@ class UserResponse(BaseModel):
 
 class Enroll(BaseModel):
     course_id: int
-    student_id: int
+    user_id: int

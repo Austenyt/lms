@@ -13,7 +13,7 @@ def courses(session=Depends(get_session)):
 
 
 @courses_router.post("/courses/{course_id}")
-def find(payload: CourseFind, session=Depends(get_session)):
+def find(payload: CourseFind, session=Depends(get_session)) -> dict:
     try:
         return course_service.find(payload.id, session)
     except ValueError:
@@ -21,19 +21,19 @@ def find(payload: CourseFind, session=Depends(get_session)):
 
 
 @courses_router.post("/courses")
-def create(payload: CourseCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)):
+def create(payload: CourseCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> dict:
     course_service.create(payload, session, user_id)
     return {"message": "Курс успешно добавлен!"}
 
 
 @courses_router.patch("/courses/{course_id}")
-def patch(payload: CoursePatch, session=Depends(get_session), user_id=Depends(get_current_user_id)):
+def patch(payload: CoursePatch, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> dict:
     course_service.patch(payload, session, user_id)
     return {'message': 'ok'}
 
 
 @courses_router.delete("/courses/{course_id}")
-def delete(payload: CourseFind, session=Depends(get_session), user_id=Depends(get_current_user_id)):
+def delete(payload: CourseFind, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> dict:
     try:
         course_service.delete(payload.id, session, user_id)
         return {"message": "OK"}

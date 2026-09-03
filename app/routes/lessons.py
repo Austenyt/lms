@@ -13,7 +13,7 @@ def lessons(session=Depends(get_session)):
 
 
 @lessons_router.post('/lessons/{id}')
-def find(payload: LessonFind, session=Depends(get_session)):
+def find(payload: LessonFind, session=Depends(get_session)) -> LessonFind | dict:
     try:
         return lesson_service.find(payload.id, session)
     except ValueError:

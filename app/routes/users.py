@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.schemas.user import UserFind, UserCreate, UserPatch
+from app.schemas.user import UserFind
 from app.services.user_service import user_service
 from app.db.database import get_session
 

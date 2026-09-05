@@ -8,7 +8,7 @@ lessons_router = APIRouter(tags=['lessons'])
 
 
 @lessons_router.get('/lessons')
-def lessons(session=Depends(get_session)):
+def lessons(session=Depends(get_session)) -> dict:
     return lesson_service.get_all(session)
 
 
@@ -21,19 +21,19 @@ def find(payload: LessonFind, session=Depends(get_session)) -> LessonFind | dict
 
 
 @lessons_router.post('/lessons')
-def create(payload: LessonCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)):
+def create(payload: LessonCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> dict:
     lesson = lesson_service.create(payload, session, user_id)
     return {'message': f'Урок {lesson.id} добавлен'}
 
 
 @lessons_router.patch('/lessons/{id}')
-def patch(payload: LessonPatch, session=Depends(get_session)):
+def patch(payload: LessonPatch, session=Depends(get_session)) -> dict:
     lesson_service.patch(payload, session)
     return {'message': 'ok'}
 
 
 @lessons_router.delete('/lessons/{id}')
-def delete(payload: LessonFind, session=Depends(get_session)):
+def delete(payload: LessonFind, session=Depends(get_session)) -> LessonFind | dict:
     try:
         lesson_service.delete(payload.id, session)
         return {"message": "Урок удален успешно"}

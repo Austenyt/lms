@@ -7,19 +7,20 @@ users_router = APIRouter(tags=['users'])
 
 
 @users_router.get('/users')
-def users(session=Depends(get_session)):
+def users(session=Depends(get_session)) -> dict:
     return user_service.get_all(session)
 
 
 @users_router.post('/users/{id}')
-def find(payload: UserFind, session=Depends(get_session)):
+def find(payload: UserFind, session=Depends(get_session)) -> UserFind | dict:
     try:
         return user_service.find(payload.id, session)
     except ValueError:
         return {'message': "Такого студента нет"}
 
+
 @users_router.delete('/users/{id}')
-def delete(payload: UserFind, session=Depends(get_session)):
+def delete(payload: UserFind, session=Depends(get_session)) -> UserFind | dict:
     try:
         user_service.find(payload.id, session)
         return {'message': "Удаление успешно"}
@@ -28,7 +29,7 @@ def delete(payload: UserFind, session=Depends(get_session)):
 
 
 @users_router.post('/users/{user_id}/{course_id}')
-def enroll(course_id, user_id, session=Depends(get_session)):
+def enroll(course_id, user_id, session=Depends(get_session)) -> dict:
     try:
         user_service.enroll(course_id, user_id, session)
         return {'message': 'Пользователь добавлен'}
@@ -37,7 +38,7 @@ def enroll(course_id, user_id, session=Depends(get_session)):
 
 
 @users_router.delete('/users/{user_id}/{course_id}')
-def dismiss(course_id, user_id, session=Depends(get_session)):
+def dismiss(course_id, user_id, session=Depends(get_session)) -> dict:
     try:
         user_service.dismiss(course_id, user_id, session)
         return {'message': 'Пользователь удален'}

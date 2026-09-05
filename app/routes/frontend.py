@@ -6,5 +6,5 @@ frontend_router = APIRouter()
 
 
 @frontend_router.get("/")
-def index():
+def index() -> FileResponse:
     return FileResponse(config.frontend_dir / "index.html")

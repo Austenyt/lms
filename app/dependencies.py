@@ -4,7 +4,8 @@ from app.services.auth import auth_service
 
 bearer = HTTPBearer()
 
-def get_current_user_id(credentials: HTTPAuthorizationCredentials=Depends(bearer)):
+
+def get_current_user_id(credentials: HTTPAuthorizationCredentials = Depends(bearer)):
     try:
         return auth_service.get_current_user(credentials.credentials)
     except ValueError:

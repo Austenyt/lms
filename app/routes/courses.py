@@ -8,12 +8,12 @@ courses_router = APIRouter(tags=["courses"])
 
 
 @courses_router.get("/courses")
-def courses(session=Depends(get_session)):
+def courses(session=Depends(get_session)) -> dict:
     return course_service.get_all(session)
 
 
 @courses_router.post("/courses/{course_id}")
-def find(payload: CourseFind, session=Depends(get_session)) -> dict:
+def find(payload: CourseFind, session=Depends(get_session)) -> CourseFind | dict:
     try:
         return course_service.find(payload.id, session)
     except ValueError:
@@ -21,7 +21,7 @@ def find(payload: CourseFind, session=Depends(get_session)) -> dict:
 
 
 @courses_router.post("/courses")
-def create(payload: CourseCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> dict:
+def create(payload: CourseCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> CourseCreate | dict:
     course_service.create(payload, session, user_id)
     return {"message": "Курс успешно добавлен!"}
 
@@ -33,7 +33,7 @@ def patch(payload: CoursePatch, session=Depends(get_session), user_id=Depends(ge
 
 
 @courses_router.delete("/courses/{course_id}")
-def delete(payload: CourseFind, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> dict:
+def delete(payload: CourseFind, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> CourseFind | dict:
     try:
         course_service.delete(payload.id, session, user_id)
         return {"message": "OK"}

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from app.db.database import get_session
 from app.dependencies import get_current_user_id
 from app.schemas.lesson import LessonFind, LessonCreate, LessonPatch
@@ -17,7 +17,7 @@ def find(payload: LessonFind, session=Depends(get_session)) -> LessonFind | dict
     try:
         return lesson_service.find(payload.id, session)
     except ValueError:
-        return {'message': 'Урока с таким id не существует'}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Урока с таким id не существует")
 
 
 @lessons_router.post('/lessons')
@@ -38,4 +38,4 @@ def delete(payload: LessonFind, session=Depends(get_session)) -> LessonFind | di
         lesson_service.delete(payload.id, session)
         return {"message": "Урок удален успешно"}
     except ValueError:
-        return {"message": "Урока с таким id не существует"}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Урока с таким id не существует")

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from app.services.course_service import course_service
 from app.schemas.course import CourseCreate, CoursePatch, CourseFind
 from app.db.database import get_session
@@ -17,7 +17,7 @@ def find(payload: CourseFind, session=Depends(get_session)) -> CourseFind | dict
     try:
         return course_service.find(payload.id, session)
     except ValueError:
-        return {"message": "Курса с таким id не существует"}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Курса с таким id не существует")
 
 
 @courses_router.post("/courses")
@@ -38,4 +38,4 @@ def delete(payload: CourseFind, session=Depends(get_session), user_id=Depends(ge
         course_service.delete(payload.id, session, user_id)
         return {"message": "OK"}
     except ValueError:
-        return {"message": "Курса с таким id не существует"}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Курса с таким id не существует")

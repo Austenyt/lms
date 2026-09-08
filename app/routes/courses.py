@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.services.course_service import course_service
-from app.schemas.course import CourseCreate, CoursePatch, CourseFind
+from app.schemas.course import CourseCreate, CoursePatch, CourseFind, CourseFindResponse
 from app.db.database import get_session
 from app.dependencies import get_current_user_id
 
@@ -8,12 +8,12 @@ courses_router = APIRouter(tags=["courses"])
 
 
 @courses_router.get("/courses")
-def courses(session=Depends(get_session)) -> dict:
+def courses(session=Depends(get_session)):
     return course_service.get_all(session)
 
 
 @courses_router.post("/courses/{course_id}")
-def find(payload: CourseFind, session=Depends(get_session)) -> CourseFind | dict:
+def find(payload: CourseFind, session=Depends(get_session)) -> CourseFindResponse:
     try:
         return course_service.find(payload.id, session)
     except ValueError:

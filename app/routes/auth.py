@@ -13,7 +13,7 @@ def registration(payload: UserRegister, session=Depends(get_session)) -> dict:
 
 
 @auth_router.post('/login')
-def login(payload: UserLogin, session=Depends(get_session)) -> UserLogin | HTTPException:
+def login(payload: UserLogin, session=Depends(get_session)):
     try:
         return auth_service.login(payload.username, payload.password, session)
     except ValueError:

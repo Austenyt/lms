@@ -7,9 +7,9 @@ class UserFind(BaseModel):
 
 class UserResponse(BaseModel):
     id: int
-    first_name: str
-    last_name: str
-    courses: list
+    first_name: str | None = None
+    last_name: str | None = None
+    courses: list = []
 
 
 class Enroll(BaseModel):

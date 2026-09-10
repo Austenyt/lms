@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
+from app.config import Config
 
 
 class CourseFind(BaseModel):
@@ -16,6 +18,11 @@ class CourseCreate(BaseModel):
     name: str
 
 
+class CourseCreateResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    name: str
+
+
 class CoursePatch(BaseModel):
     id: int
-    name: str
+    name: str | None = None

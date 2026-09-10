@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.services.course_service import course_service
-from app.schemas.course import CourseCreate, CoursePatch, CourseFind, CourseFindResponse
+from app.schemas.course import CourseCreate, CourseCreateResponse, CoursePatch, CourseFind, CourseFindResponse
 from app.db.database import get_session
 from app.dependencies import get_current_user_id
 
@@ -21,9 +21,9 @@ def find(payload: CourseFind, session=Depends(get_session)) -> CourseFindRespons
 
 
 @courses_router.post("/courses")
-def create(payload: CourseCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> CourseCreate | dict:
-    course_service.create(payload, session, user_id)
-    return {"message": "Курс успешно добавлен!"}
+def create(payload: CourseCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> CourseCreateResponse:
+    course = course_service.create(payload, session, user_id)
+    return course
 
 
 @courses_router.patch("/courses/{course_id}")

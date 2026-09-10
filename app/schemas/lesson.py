@@ -6,8 +6,8 @@ class LessonFind(BaseModel):
 
 
 class LessonCreate(BaseModel):
-    name: str
-    content: str
+    name: str | None = None
+    content: str | None = None
     course_id: int
 
 

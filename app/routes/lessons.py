@@ -1,19 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.db.database import get_session
 from app.dependencies import get_current_user_id
-from app.schemas.lesson import LessonFind, LessonCreate, LessonPatch
+from app.schemas.lesson import LessonFind, LessonFindResponse, LessonCreate, LessonCreateResponse, LessonPatch
 from app.services.lesson_service import lesson_service
 
 lessons_router = APIRouter(tags=['lessons'])
 
 
 @lessons_router.get('/lessons')
-def lessons(session=Depends(get_session)) -> dict:
+def lessons(session=Depends(get_session)):
     return lesson_service.get_all(session)
 
 
 @lessons_router.post('/lessons/{id}')
-def find(payload: LessonFind, session=Depends(get_session)) -> LessonFind | dict:
+def find(payload: LessonFind, session=Depends(get_session)) -> LessonFindResponse:
     try:
         return lesson_service.find(payload.id, session)
     except ValueError:
@@ -21,21 +21,20 @@ def find(payload: LessonFind, session=Depends(get_session)) -> LessonFind | dict
 
 
 @lessons_router.post('/lessons')
-def create(payload: LessonCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> dict:
-    lesson = lesson_service.create(payload, session, user_id)
-    return {'message': f'Урок {lesson.id} добавлен'}
+def create(payload: LessonCreate, session=Depends(get_session), user_id=Depends(get_current_user_id)) -> (
+        LessonCreateResponse):
+    return lesson_service.create(payload, session, user_id)
 
 
 @lessons_router.patch('/lessons/{id}')
 def patch(payload: LessonPatch, session=Depends(get_session)) -> dict:
-    lesson_service.patch(payload, session)
-    return {'message': 'ok'}
+    return lesson_service.patch(payload, session)
 
 
 @lessons_router.delete('/lessons/{id}')
-def delete(payload: LessonFind, session=Depends(get_session)) -> LessonFind | dict:
+def delete(payload: LessonFind, session=Depends(get_session)):
     try:
         lesson_service.delete(payload.id, session)
-        return {"message": "Урок удален успешно"}
+        return {'id удаленного урока': payload.id}
     except ValueError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Урока с таким id не существует")

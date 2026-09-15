@@ -15,3 +15,8 @@ class UserResponse(BaseModel):
 class Enroll(BaseModel):
     course_id: int
     user_id: int
+
+
+class Dismiss(BaseModel):
+    course_id: int
+    user_id: int

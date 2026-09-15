@@ -5,7 +5,7 @@ class LessonFind(BaseModel):
     id: int
 
 
-class LessonFindResponse(BaseModel):
+class LessonResponse(BaseModel):
     id: int
     name: str
     course_id: int

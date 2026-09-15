@@ -1,18 +1,20 @@
 from fastapi import HTTPException, status
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import Session
 
 from app.models.models import Course
+from app.schemas.course import CourseCreate, CourseFind
 
 
 class CourseService:
 
     @staticmethod
-    def get_all(session):
+    def get_all(session: Session):
         return session.scalars(select(Course).options(selectinload(Course.lessons))).all()
 
     @staticmethod
-    def create(payload, session, user_id):
+    def create(payload: CourseCreate, session: Session, user_id: int):
         course = Course(**payload.model_dump(), owner_id=user_id)
         session.add(course)
         session.commit()
@@ -20,8 +22,8 @@ class CourseService:
         return course
 
     @staticmethod
-    def find(course_id, session):
-        course = session.scalar(select(Course).where(Course.id == course_id).options(selectinload(Course.lessons)))
+    def find(payload: CourseFind, session: Session):
+        course = session.scalar(select(Course).where(Course.id == payload.id).options(selectinload(Course.lessons)))
         if course is None:
             raise ValueError("id не найден")
         return course

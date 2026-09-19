@@ -4,7 +4,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.orm import Session
 
 from app.models.models import Course
-from app.schemas.course import CourseCreate, CourseFind
+from app.schemas.course import CourseCreate, CourseFind, CoursePatch
 
 
 class CourseService:
@@ -29,11 +29,11 @@ class CourseService:
         return course
 
     @staticmethod
-    def patch(payload, session, user_id):
+    def patch(payload: CoursePatch, session: Session, user_id: int):
         if payload.id != Course.id:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Курс с таким id не найден')
         course = session.scalar(select(Course).where(Course.id == payload.id))
-        if int(user_id) != course.owner_id:
+        if user_id != course.owner_id:
             raise ValueError("Пользователь не является владельцем курса")
         session.execute(
             update(Course).where(Course.id == payload.id).values(
@@ -42,9 +42,9 @@ class CourseService:
         session.commit()
 
     @staticmethod
-    def delete(id, session, user_id):
+    def delete(id: int, session: Session, user_id: int):
         course = session.scalar(select(Course).where(Course.id == id))
-        if int(user_id) != course.owner_id:
+        if user_id != course.owner_id:
             raise ValueError("Пользователь не является владельцем курса")
         session.delete(course)
         session.commit()

@@ -1,17 +1,20 @@
 from sqlalchemy import select, update
 from app.models.models import Lesson, Course
+from sqlalchemy.orm import Session
+
+from app.schemas.lesson import LessonFind, LessonCreate, LessonPatch
 
 
 class LessonService:
 
     @staticmethod
-    def get_all(session):
+    def get_all(session: Session):
         return session.scalars(select(Lesson)).all()
 
     @staticmethod
-    def create(payload, session, user_id):
+    def create(payload: LessonCreate, session: Session, user_id: int):
         course = session.scalar(select(Course).where(Course.id == payload.course_id))
-        if int(user_id) != course.owner_id:
+        if user_id != course.owner_id:
             raise ValueError("Пользователь не является владельцем курса")
         lesson = Lesson(**payload.model_dump())
         session.add(lesson)
@@ -20,14 +23,14 @@ class LessonService:
         return lesson
 
     @staticmethod
-    def find(id, session):
-        lesson = session.get(Lesson, id)
+    def find(payload: LessonFind, session: Session):
+        lesson = session.scalar(select(Lesson).where(Lesson.id == payload.id))
         if lesson is None:
             raise ValueError("Урок с указанным id не найден")
         return lesson
 
     @staticmethod
-    def patch(payload, session):
+    def patch(payload: LessonPatch, session: Session):
         if payload.name and payload.content is None:
             raise ValueError("Пустой запрос")
         session.execute(
@@ -36,7 +39,7 @@ class LessonService:
         session.commit()
 
     @staticmethod
-    def delete(id, session):
+    def delete(id: int, session: Session):
         lesson = session.scalar(select(Lesson).where(Lesson.id == id))
         session.delete(lesson)
         session.commit()

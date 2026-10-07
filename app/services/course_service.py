@@ -14,7 +14,7 @@ class CourseService:
         return session.scalars(select(Course).options(selectinload(Course.lessons))).all()
 
     @staticmethod
-    def create(payload: CourseCreate, session: Session, user_id: int):
+    def create(payload: CourseCreate, session: Session, user_id: int) -> list:
         course = Course(**payload.model_dump(), owner_id=user_id)
         session.add(course)
         session.commit()

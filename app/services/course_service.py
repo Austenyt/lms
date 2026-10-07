@@ -10,7 +10,7 @@ from app.schemas.course import CourseCreate, CourseFind
 class CourseService:
 
     @staticmethod
-    def get_all(session: Session):
+    def get_all(session: Session) -> list[Course]:
         return session.scalars(select(Course).options(selectinload(Course.lessons))).all()
 
     @staticmethod

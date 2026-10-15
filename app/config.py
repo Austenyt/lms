@@ -13,4 +13,4 @@ class Config(BaseSettings):
 
 config = Config()
 
-DATABASE_URL = 'sqlite:///./lms.db'
+DATABASE_URL = 'postgresql+psycopg://postgres:postgres@localhost:5432/lms'

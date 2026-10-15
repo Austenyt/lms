@@ -14,7 +14,7 @@ class AuthService:
         self.token_expire_session = config.token_expire_session
         self.pwd_context = config.pwd_context
 
-    def register(self, first_name: str, last_name: str, username: str, password: str, session: Session):
+    def register(self, first_name: str, last_name: str, username: str, password: str, session: Session) -> User:
         existing = session.scalar(select(User).where(User.username == username))
         if existing:
             raise ValueError("Уже существует")
@@ -32,7 +32,7 @@ class AuthService:
         session.refresh(user)
         return user
 
-    def login(self, username: str, password: str, session: Session):
+    def login(self, username: str, password: str, session: Session) -> str:
         user = session.scalar(select(User).where(User.username == username))
         if not user:
             raise ValueError("Пользователь не зарегистрирован")
@@ -43,7 +43,7 @@ class AuthService:
         token = self._create_token(user.id)
         return token
 
-    def _create_token(self, user_id: int):
+    def _create_token(self, user_id: int) -> str:
         expire = datetime.utcnow() + timedelta(minutes=self.token_expire_session)
         payload = {
             'exp': expire,
@@ -51,7 +51,7 @@ class AuthService:
         }
         return jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
 
-    def get_current_user(self, token: str):
+    def get_current_user(self, token: str) -> str:
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
             return payload['sub']

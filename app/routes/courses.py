@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.services.course_service import course_service
-from app.schemas.course import (CourseCreate, CourseCreateResponse, CoursePatch, CoursePatchResponse, CourseFind,
-                                CourseResponse)
+from app.schemas.course import (
+    CourseCreate, CourseCreateResponse, CoursePatch, CoursePatchResponse, CourseFind, CourseResponse
+)
 from app.db.database import get_session
 from app.dependencies import get_current_user_id
 
@@ -35,7 +36,7 @@ def patch(payload: CoursePatch, session=Depends(get_session), user_id=Depends(ge
 
 @courses_router.delete("/courses/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete(payload: CourseFind, session=Depends(get_session),
-           user_id=Depends(get_current_user_id)):
+           user_id=Depends(get_current_user_id)) -> None:
     try:
         course_service.delete(payload.id, session, user_id)
     except ValueError:

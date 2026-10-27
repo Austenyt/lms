@@ -17,18 +17,19 @@
 #         new_list.append(())
 
 
-s = "1222311"
-c = s[0]
-x = 1
-new_list = []
-for ch in s[1:]:
-    if ch != c:
-        new_list.append((x, c))
-        c = ch
-        x = 1
-    else:
-        x += 1
-new_list.append((x, c))
+# s = "1222311"
+# c = s[0]
+# x = 1
+# new_str = ""
+# for ch in s[1:]:
+#     if ch != c:
+#         new_str += str((x, int(c))) + " "
+#         c = ch
+#         x = 1
+#     else:
+#         x += 1
+# new_str += str((x, int(c)))
+# print(new_str)
 
 
 #             x += 1
@@ -42,3 +43,14 @@ new_list.append((x, c))
 #
 # s = "1222311"
 # print(compress_sequence(s))
+
+s = 'abcdefghij'
+width = 1
+service_s = ""
+new_s = ""
+for ch in s:
+    service_s += ch
+    if len(service_s) == width:
+        new_s += service_s + '\n'
+        service_s = ""
+print(new_s)

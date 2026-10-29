@@ -44,15 +44,35 @@
 # s = "1222311"
 # print(compress_sequence(s))
 
-s = 'abcdefghij'
-width = 1
-service_s = ""
-new_s = ""
-for ch in s:
-    service_s += ch
-    if len(service_s) == width:
-        new_s += service_s + '\n'
-        service_s = ""
-if service_s:
-    new_s += service_s
-print(new_s.rstrip('\n'))
+# s = 'abcdefghij'
+# width = 1
+# service_s = ""
+# new_s = ""
+# for ch in s:
+#     service_s += ch
+#     if len(service_s) == width:
+#         new_s += service_s + '\n'
+#         service_s = ""
+# if service_s:
+#     new_s += service_s
+# print(new_s.rstrip('\n'))
+
+
+# n = 15
+# new_list = []
+# for i in range(1, n+1):
+#     a = ''
+#     if i % 3 == 0:
+#         a += 'Fizz'
+#     elif i % 5 == 0:
+#         a += 'Buzz'
+#         new_list.append(a)
+#     else:
+#         new_list.append(str(i))
+# print(new_list)
+
+x = "ab"
+if 'a' in x:
+    print(1)
+if 'b' in x:
+    print(2)

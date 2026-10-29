@@ -53,4 +53,6 @@ for ch in s:
     if len(service_s) == width:
         new_s += service_s + '\n'
         service_s = ""
-print(new_s)
+if service_s:
+    new_s += service_s
+print(new_s.rstrip('\n'))

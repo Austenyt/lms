@@ -15,6 +15,7 @@
 #         else:
 #             dic[i] = x + 1
 #         new_list.append(())
+import math
 
 
 # s = "1222311"
@@ -71,8 +72,26 @@
 #         new_list.append(str(i))
 # print(new_list)
 
-x = "ab"
-if 'a' in x:
-    print(1)
-if 'b' in x:
-    print(2)
+# x = "ab"
+# if 'a' in x:
+#     print(1)
+# if 'b' in x:
+#     print(2)
+
+def find_median(input_string):
+    input_list = input_string.split(' ')
+    input_list.sort()
+    a = 0
+    if len(input_list) % 2 != 0:
+        index = math.floor(len(input_list) / 2)
+        print(index)
+        print(input_list)
+        a = input_list[index]
+    else:
+        index = len(input_list) // 2
+        a = round((int(input_list[index]) + int(input_list[index - 1])) / 2, 2)
+
+    return a
+
+input_string = '2 3 10'
+print(find_median(input_string))
